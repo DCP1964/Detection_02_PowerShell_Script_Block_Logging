@@ -36,7 +36,7 @@ The presence of these logs confirms visibility into executed PowerShell code, wh
 index=main EventCode=4104
 | stats count by host
 ```
-![4104 Validation](../screenshots/detection2/01_4104_validation.png)
+![4104 Validation](screenshots/detection2/01_4104_validation.png)
 ---
 
 ## Step 2 — RAW VIEW
@@ -50,7 +50,7 @@ Unlike Sysmon process logs, these events contain the actual PowerShell code exec
 index=main EventCode=4104
 | table _time host Message
 ```
-![Script Content](../screenshots/detection2/02_script_content.png)
+![Script Content](screenshots/detection2/02_script_content.png)
 
 ---
 
@@ -66,7 +66,7 @@ index=main EventCode=4104
 | search Message="*FromBase64String*" OR Message="*EncodedCommand*"
 | table _time host Message
 ```
-![Encoded Detection](../screenshots/detection2/03_encoded_detection.png)
+![Encoded Detection](screenshots/detection2/03_encoded_detection.png)
 
 ---
 
@@ -82,7 +82,7 @@ index=main EventCode=4104
 | search Message="*IEX*" OR Message="*Invoke-Expression*" OR Message="*DownloadString*" OR Message="*Invoke-WebRequest*"
 | table _time host Message
 ```
-![Suspicious Functions](../screenshots/detection2/04_suspicious_functions.png)
+![Suspicious Functions](screenshots/detection2/04_suspicious_functions.png)
 
 ---
 
@@ -98,7 +98,7 @@ index=main EventCode=4104
 | search Message="*IEX*" OR Message="*ExecutionPolicy Bypass*" OR Message="*DownloadString*"
 | table _time host Message
 ```
-![Obfuscation Detection](../screenshots/detection2/05_obfuscation.png)
+![Obfuscation Detection](screenshots/detection2/05_obfuscation.png)
 
 Note:
 Certain obfuscation techniques such as variable-based execution 
@@ -125,7 +125,7 @@ index=main EventCode=4104
 | stats count values(Message) as scripts by host
 ```
 
-![Final Detection](../screenshots/detection2/06_final_detection.png)
+![Final Detection](screenshots/detection2/06_final_detection.png)
 
 ## Final Detection Summary
 
