@@ -1,0 +1,5 @@
+```spl
+index=main EventCode=4104
+| search Message="*IEX*" OR Message="*DownloadString*" OR Message="*FromBase64String*"
+| stats count values(Message) as scripts by host
+```
